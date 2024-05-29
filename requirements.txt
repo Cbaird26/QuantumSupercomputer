@@ -1,0 +1,5 @@
+qiskit
+pennylane
+streamlit
+tensorflow
+torch

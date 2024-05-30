@@ -1,6 +1,6 @@
 import streamlit as st
-from qiskit import QuantumCircuit, transpile, assemble, IBMQ
-from qiskit.providers.ibmq import least_busy
+from qiskit import QuantumCircuit, transpile, assemble
+from qiskit_ibm_runtime import QiskitRuntimeService
 import pennylane as qml
 import quantum_algorithms
 from pennylane import numpy as np
@@ -8,10 +8,13 @@ from pennylane import numpy as np
 st.title('Quantum Supercomputer')
 st.write('This is a basic interface for QuantumBridge.')
 
-# Load IBMQ account
+# Load IBMQ account using QiskitRuntimeService
 api_token = st.secrets["IBMQ_TOKEN"]
-IBMQ.enable_account(api_token)
-provider = IBMQ.get_provider(hub='ibm-q')
+service = QiskitRuntimeService(
+    channel='ibm_quantum',
+    instance='ibm-q/open/main',
+    token=api_token
+)
 
 # Example quantum circuit
 def create_quantum_circuit():
@@ -25,8 +28,7 @@ circuit = create_quantum_circuit()
 st.write(circuit.draw())
 
 if st.button('Run Quantum Circuit'):
-    backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= 2 and
-                                           not x.configuration().simulator and x.status().operational==True))
+    backend = service.least_busy(['ibmq_qasm_simulator', 'ibmq_belem', 'ibmq_lima', 'ibmq_manila'])
     transpiled_circuit = transpile(circuit, backend)
     qobj = assemble(transpiled_circuit)
     job = backend.run(qobj)

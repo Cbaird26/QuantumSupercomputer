@@ -9,7 +9,7 @@ st.title('Quantum Supercomputer')
 st.write('This is a basic interface for QuantumBridge.')
 
 # Load IBMQ account
-api_token = st.secrets["526944faf27aeedd952653ff44c8f585f40beb9812cfaca7d4d415ebd4ead190e32ee32ef158ce92c18247d669d2d335bce731f934973d3206b12cf74d91ed2d"]
+api_token = st.secrets["IBMQ_TOKEN"]
 IBMQ.enable_account(api_token)
 provider = IBMQ.get_provider(hub='ibm-q')
 
